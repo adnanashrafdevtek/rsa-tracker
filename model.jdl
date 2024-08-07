@@ -9,7 +9,7 @@ enum TaskStatus{
 
 entity Team{
 	name String required
-    active Boolean default True required
+    active Boolean required
     createdDate Instant
     createdBy String
     modifiedDate Instant
@@ -20,7 +20,7 @@ entity Task{
     description String required
     priority Priority required
     status TaskStatus required
-    dueDate Date required
+    dueDate LocalDate required
     createdDate Instant
     createdBy String
     modifiedDate Instant
@@ -31,7 +31,8 @@ entity Task{
 entity Message {
 	email String 
 	message String required
-    sendToAllTeamMembers Boolean default False required
+    sendToAllTeamMembers Boolean  required
+    broadcastToAllTeams Boolean required
     dateSent Instant
 }
 entity Document {
@@ -43,18 +44,18 @@ entity Document {
 }
 
 relationship ManyToMany {
-	Team{teamMembers} to User{teams}
+	Team{teamMembers} to User{teams} with builtInEntity
 }
 
 relationship ManyToOne {
-	Task{assignedTo} to User
+	Task{assignedTo} to User with builtInEntity
     Task{team} to Team{tasks}
-    Message{toUserId} to User
-    Message{fromUserId} to User
+    Message{toUserId} to User with builtInEntity
+    Message{fromUserId} to User with builtInEntity
     Message{team} to Team{messages}
     Document{message} to Message{documents}
     Document{team} to Team{documents}
-    Team{teamLead} to User
+    Team{teamLead} to User with builtInEntity
 }
 dto * with mapstruct
 filter *
