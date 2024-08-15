@@ -49,31 +49,6 @@ export const TeamKanban = () => {
     [key: string]: IColumn;
   }
 
-  // const columnsFromBackend = {
-  //   [uuid()]: {
-  //     name: "Requested",
-  //     items: []
-  //   }
-  // };
-
-  const [teamKanban, setTeamKanban] = useState<ITeamkanban>({});
-  // type TaskItem = {
-  //   id: string;
-  //   content: string;
-  // };
-
-  // type TeamItem = {
-  //   id: string;
-  //   name: string;
-  //   items:TaskItem[]
-  // };
-
-  // const columnsFromBackend:TeamItem = [
-
-  //   // {id: uuid(), name:"To do", items:itemsFromBackend},
-  //   // {id: uuid(), name:"To do22", items:[]}
-  // ]
-
   const getAllEntities = () => {
     dispatch(
       getEntities({
@@ -104,7 +79,7 @@ export const TeamKanban = () => {
       };
     });
 
-    setTeamKanban(columnsFromBackend);
+    // setTeamKanban(columnsFromBackend);
     setColumns(columnsFromBackend);
     console.log(columnsFromBackend);
   }, [teamList]);
