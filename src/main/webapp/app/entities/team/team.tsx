@@ -1,133 +1,210 @@
-import React, { useState, useEffect, useReducer, useCallback } from 'react';
-// import ls from 'local-storage';
-import { v1 as uuidv1 } from 'uuid';
-import groupBy from 'lodash.groupby';
-import List from './components/List/List';
-import { DragDropContext } from 'react-beautiful-dnd';
-import Options from './components/Options/Options';
-import { cardsReducer, listsReducer } from './reducers';
-import { IList, ICard } from './models';
-import { initialCards, initialLists } from './utils';
-import { Container, Lists, NewListButton } from './App.styles';
-import { reorder } from './utils';
-import './styles.css';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Button, Table } from 'reactstrap';
+import { Translate, TextFormat, getPaginationState, JhiPagination, JhiItemCount } from 'react-jhipster';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
+import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
+import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { useAppDispatch, useAppSelector } from 'app/config/store';
+
+import { getEntities } from './team.reducer';
 
 export const Team = () => {
-  // const listsFromLs = ls.get<IList[]>('lists') || [];
-  // const cardsFromLs = ls.get<ICard[]>('cards') || [];
-  // const bgColorFromLs = ls.get<string>('bgColor');
+  const dispatch = useAppDispatch();
 
-  const listsFromLs: IList[] = [];
+  const pageLocation = useLocation();
+  const navigate = useNavigate();
 
-  // Initialize cardsFromLs to an empty array
-  const cardsFromLs: ICard[] = [];
+  const [paginationState, setPaginationState] = useState(
+    overridePaginationStateWithQueryParams(getPaginationState(pageLocation, ITEMS_PER_PAGE, 'id'), pageLocation.search),
+  );
 
-  // Initialize bgColorFromLs to a default color
-  const bgColorFromLs: string = '#ffffff';
+  const teamList = useAppSelector(state => state.team.entities);
+  const loading = useAppSelector(state => state.team.loading);
+  const totalItems = useAppSelector(state => state.team.totalItems);
 
-  const [bgColor, setBgColor] = useState(bgColorFromLs ? bgColorFromLs : 'dodgerblue');
-
-  const [cards, cardsDispatch] = useReducer(cardsReducer, cardsFromLs ? cardsFromLs : initialCards);
-
-  const [lists, listsDispatch] = useReducer(listsReducer, listsFromLs ? listsFromLs : initialLists);
-
-  // useEffect(() => {
-  //   ls.set<ICard[]>('cards', cards);
-  //   ls.set<IList[]>('lists', lists);
-  // }, [cards, lists]);
-
-  const handleBgColorChange = (color: { hex: string }) => {
-    setBgColor(color.hex);
-    // ls.set<string>('bgColor', color.hex);
+  const getAllEntities = () => {
+    dispatch(
+      getEntities({
+        page: paginationState.activePage - 1,
+        size: paginationState.itemsPerPage,
+        sort: `${paginationState.sort},${paginationState.order}`,
+      }),
+    );
   };
 
-  const onDragEnd = useCallback(
-    result => {
-      // dropped outside the list
-      if (!result.destination) {
-        return;
-      }
+  const sortEntities = () => {
+    getAllEntities();
+    const endURL = `?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`;
+    if (pageLocation.search !== endURL) {
+      navigate(`${pageLocation.pathname}${endURL}`);
+    }
+  };
 
-      const itemsSplitByListIds = groupBy(cards, (card: any) => {
-        return card.listId;
+  useEffect(() => {
+    sortEntities();
+  }, [paginationState.activePage, paginationState.order, paginationState.sort]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(pageLocation.search);
+    const page = params.get('page');
+    const sort = params.get(SORT);
+    if (page && sort) {
+      const sortSplit = sort.split(',');
+      setPaginationState({
+        ...paginationState,
+        activePage: +page,
+        sort: sortSplit[0],
+        order: sortSplit[1],
       });
+    }
+  }, [pageLocation.search]);
 
-      if (result.source.droppableId === result.destination.droppableId) {
-        // Items are in the same list, so just re-order the list array
-        const target = itemsSplitByListIds[result.destination.droppableId];
-        const reordered: any = reorder<ICard>([...target], result.source.index, result.destination.index);
+  const sort = p => () => {
+    setPaginationState({
+      ...paginationState,
+      order: paginationState.order === ASC ? DESC : ASC,
+      sort: p,
+    });
+  };
 
-        // Get rid of old list and replace with updated one
-        const filteredCards = cards.filter((card: any) => card.listId !== result.source.droppableId);
+  const handlePagination = currentPage =>
+    setPaginationState({
+      ...paginationState,
+      activePage: currentPage,
+    });
 
-        cardsDispatch({
-          type: 'SET',
-          payload: { newState: [...filteredCards, ...reordered] },
-        });
-      } else {
-        // Items are in different lists, so just change the item's listId
+  const handleSyncList = () => {
+    sortEntities();
+  };
 
-        const removeByIndex = (list: any[], index: number) => [...list.slice(0, index), ...list.slice(index + 1)];
-
-        const source = cards.filter((card: ICard) => card.listId === result.source.droppableId);
-        const sourceWithoutDragged = removeByIndex(source, result.source.index);
-
-        const target = cards.filter((card: ICard) => card.listId === result.destination.droppableId);
-
-        const itemWithNewId = {
-          ...source[result.source.index],
-          listId: result.destination.droppableId,
-        };
-
-        target.splice(result.destination.index, 0, itemWithNewId);
-
-        const filteredCards = cards.filter(
-          (card: any) => card.listId !== result.source.droppableId && card.listId !== result.destination.droppableId,
-        );
-
-        cardsDispatch({
-          type: 'SET',
-          payload: {
-            newState: [...filteredCards, ...sourceWithoutDragged, ...target],
-          },
-        });
-      }
-    },
-    [cards],
-  );
+  const getSortIconByFieldName = (fieldName: string) => {
+    const sortFieldName = paginationState.sort;
+    const order = paginationState.order;
+    if (sortFieldName !== fieldName) {
+      return faSort;
+    } else {
+      return order === ASC ? faSortUp : faSortDown;
+    }
+  };
 
   return (
-    <Container bgColor={bgColor}>
-      <Options handleBgColorChange={handleBgColorChange} />
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Lists>
-          {lists.map((list: IList) => (
-            <List
-              key={list.id}
-              list={list}
-              cards={cards.filter((card: ICard) => card.listId === list.id)}
-              cardsDispatch={cardsDispatch}
-              listsDispatch={listsDispatch}
+    <div>
+      <h2 id="team-heading" data-cy="TeamHeading">
+        Teams
+        <div className="d-flex justify-content-end">
+          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+            <FontAwesomeIcon icon="sync" spin={loading} /> Refresh list
+          </Button>
+          <Link to="/team/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+            <FontAwesomeIcon icon="plus" />
+            &nbsp; Create a new Team
+          </Link>
+        </div>
+      </h2>
+      <div className="table-responsive">
+        {teamList && teamList.length > 0 ? (
+          <Table responsive>
+            <thead>
+              <tr>
+                <th className="hand" onClick={sort('id')}>
+                  ID <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
+                </th>
+                <th className="hand" onClick={sort('name')}>
+                  Name <FontAwesomeIcon icon={getSortIconByFieldName('name')} />
+                </th>
+                <th className="hand" onClick={sort('active')}>
+                  Active <FontAwesomeIcon icon={getSortIconByFieldName('active')} />
+                </th>
+                <th className="hand" onClick={sort('createdDate')}>
+                  Created Date <FontAwesomeIcon icon={getSortIconByFieldName('createdDate')} />
+                </th>
+                <th className="hand" onClick={sort('createdBy')}>
+                  Created By <FontAwesomeIcon icon={getSortIconByFieldName('createdBy')} />
+                </th>
+                <th className="hand" onClick={sort('modifiedDate')}>
+                  Modified Date <FontAwesomeIcon icon={getSortIconByFieldName('modifiedDate')} />
+                </th>
+                <th className="hand" onClick={sort('modifiedBy')}>
+                  Modified By <FontAwesomeIcon icon={getSortIconByFieldName('modifiedBy')} />
+                </th>
+                <th>
+                  Team Lead <FontAwesomeIcon icon="sort" />
+                </th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {teamList.map((team, i) => (
+                <tr key={`entity-${i}`} data-cy="entityTable">
+                  <td>
+                    <Button tag={Link} to={`/team/${team.id}`} color="link" size="sm">
+                      {team.id}
+                    </Button>
+                  </td>
+                  <td>{team.name}</td>
+                  <td>{team.active ? 'true' : 'false'}</td>
+                  <td>{team.createdDate ? <TextFormat type="date" value={team.createdDate} format={APP_DATE_FORMAT} /> : null}</td>
+                  <td>{team.createdBy}</td>
+                  <td>{team.modifiedDate ? <TextFormat type="date" value={team.modifiedDate} format={APP_DATE_FORMAT} /> : null}</td>
+                  <td>{team.modifiedBy}</td>
+                  <td>{team.teamLead ? team.teamLead.id : ''}</td>
+                  <td className="text-end">
+                    <div className="btn-group flex-btn-group-container">
+                      <Button tag={Link} to={`/team/${team.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                        <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">View</span>
+                      </Button>
+                      <Button
+                        tag={Link}
+                        to={`/team/${team.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
+                        color="primary"
+                        size="sm"
+                        data-cy="entityEditButton"
+                      >
+                        <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline">Edit</span>
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          (window.location.href = `/team/${team.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`)
+                        }
+                        color="danger"
+                        size="sm"
+                        data-cy="entityDeleteButton"
+                      >
+                        <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Delete</span>
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        ) : (
+          !loading && <div className="alert alert-warning">No Teams found</div>
+        )}
+      </div>
+      {totalItems ? (
+        <div className={teamList && teamList.length > 0 ? '' : 'd-none'}>
+          <div className="justify-content-center d-flex">
+            <JhiItemCount page={paginationState.activePage} total={totalItems} itemsPerPage={paginationState.itemsPerPage} />
+          </div>
+          <div className="justify-content-center d-flex">
+            <JhiPagination
+              activePage={paginationState.activePage}
+              onSelect={handlePagination}
+              maxButtons={5}
+              itemsPerPage={paginationState.itemsPerPage}
+              totalItems={totalItems}
             />
-          ))}
-          <NewListButton
-            onClick={() => {
-              listsDispatch({
-                type: 'ADD',
-                payload: {
-                  id: uuidv1(),
-                  listTitle: 'new list',
-                },
-              });
-            }}
-          >
-            + New list
-          </NewListButton>
-        </Lists>
-      </DragDropContext>
-    </Container>
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+    </div>
   );
 };
+
 export default Team;
-// When list deleted, delete all cards with that listId, otherwise loads of cards hang around in localstorage
-// Remove anys

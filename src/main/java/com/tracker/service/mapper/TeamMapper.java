@@ -23,6 +23,7 @@ public interface TeamMapper extends EntityMapper<TeamDTO, Team> {
     @Named("userId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "login", source = "login")
     UserDTO toDtoUserId(User user);
 
     @Named("userIdSet")

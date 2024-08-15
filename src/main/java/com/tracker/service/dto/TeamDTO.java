@@ -31,6 +31,8 @@ public class TeamDTO implements Serializable {
 
     private UserDTO teamLead;
 
+    private String listTitle;
+
     private Set<UserDTO> teamMembers = new HashSet<>();
 
     public Long getId() {
@@ -140,5 +142,13 @@ public class TeamDTO implements Serializable {
             ", teamLead=" + getTeamLead() +
             ", teamMembers=" + getTeamMembers() +
             "}";
+    }
+
+    public String getListTitle() {
+        return name;
+    }
+
+    public void setListTitle(String listTitle) {
+        this.name = listTitle;
     }
 }
