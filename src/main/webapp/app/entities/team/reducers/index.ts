@@ -32,7 +32,7 @@ export const cardsReducer = (state: ICard[], action: { type: string; payload: an
 };
 
 export const listsReducer = (state: IList[], action: { type: string; payload: any }) => {
-  const { id, listTitle } = action.payload;
+  const { id, listTitle, name } = action.payload;
   switch (action.type) {
     case 'ADD':
       return [...state, { id, listTitle }];

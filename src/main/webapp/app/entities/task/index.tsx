@@ -12,6 +12,7 @@ const TaskRoutes = () => (
   <ErrorBoundaryRoutes>
     <Route index element={<Task />} />
     <Route path="new" element={<TaskUpdate />} />
+    <Route path="newTeam" element={<TaskDeleteDialog />} />
     <Route path=":id">
       <Route index element={<TaskDetail />} />
       <Route path="edit" element={<TaskUpdate />} />

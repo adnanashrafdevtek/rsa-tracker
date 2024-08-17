@@ -1,0 +1,35 @@
+
+entity Template{
+	name String required
+    description String required
+    createdDate Instant
+    createdBy String
+    modifiedDate Instant
+    modifiedBy String
+}
+entity TemplateTask{
+	name String required
+    description String 
+    createdDate Instant
+    createdBy String
+    modifiedDate Instant
+    modifiedBy String
+    
+}
+entity TemplateChecklist{
+	name String required
+    createdDate Instant
+    createdBy String
+    modifiedDate Instant
+    modifiedBy String
+    
+}
+
+relationship ManyToOne {
+	TemplateTask{template} to Template{tasks}
+    TemplateChecklist{task} to TemplateTask{checklist}
+}
+dto * with mapstruct
+filter *
+service all with serviceClass
+paginate all with pagination

@@ -18,12 +18,12 @@ public interface TaskMapper extends EntityMapper<TaskDTO, Task> {
     TaskDTO toDto(Task s);
 
     @Named("userId")
-    @BeanMapping(ignoreByDefault = true)
+    @BeanMapping(ignoreByDefault = false)
     @Mapping(target = "id", source = "id")
     UserDTO toDtoUserId(User user);
 
     @Named("teamId")
-    @BeanMapping(ignoreByDefault = true)
+    @BeanMapping(ignoreByDefault = false)
     @Mapping(target = "id", source = "id")
     TeamDTO toDtoTeamId(Team team);
 }

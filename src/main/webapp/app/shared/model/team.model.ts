@@ -7,6 +7,7 @@ import { IDocument } from 'app/shared/model/document.model';
 export interface ITeam {
   id?: number;
   name?: string;
+  listTitle?: string;
   active?: boolean;
   createdDate?: dayjs.Dayjs | null;
   createdBy?: string | null;

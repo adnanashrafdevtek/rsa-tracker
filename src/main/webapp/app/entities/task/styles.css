@@ -1,0 +1,38 @@
+.cardKanban {
+  background-color: white;
+  border: 1px solid #c4ced4 !important;
+  border-radius: 6px !important;
+  color: #4b4453;
+  margin: 4px;
+  padding: 0px;
+}
+
+.cardKanbanPriority {
+  background-color: #f76b98;
+  height: 30px;
+  margin: 3px;
+  border-radius: 6px !important;
+  color: white;
+  font-size: 15px;
+}
+
+.cardKanbanView {
+  background-color: #e0e1dd;
+  height: 20px;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 0px;
+  vertical-align: top;
+  padding: 4px;
+  border: 1px solid #8d99ae;
+  border-radius: 3px !important;
+  color: #003566;
+  font-size: 12px;
+}
+
+li {
+  display: block;
+  display: block;
+  float: left;
+  clear: left;
+}

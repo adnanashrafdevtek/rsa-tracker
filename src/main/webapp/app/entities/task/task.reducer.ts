@@ -18,8 +18,9 @@ const apiUrl = 'api/tasks';
 
 // Actions
 
-export const getEntities = createAsyncThunk('task/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
-  const requestUrl = `${apiUrl}?${sort ? `page=${page}&size=${size}&sort=${sort}&` : ''}cacheBuster=${new Date().getTime()}`;
+export const getEntities = createAsyncThunk('task/fetch_entity_list', async ({ query, page, size, sort }: IQueryParams) => {
+  let requestUrl = `${apiUrl}?${sort ? `page=${page}&size=${size}&sort=${sort}&` : ''}cacheBuster=${new Date().getTime()}`;
+  if (query) requestUrl = requestUrl + `&${query}`;
   return axios.get<ITask[]>(requestUrl);
 });
 

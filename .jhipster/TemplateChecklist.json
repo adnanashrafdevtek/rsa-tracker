@@ -1,0 +1,45 @@
+{
+  "annotations": {
+    "changelogDate": "20240807010302"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "template_checklist",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "modifiedDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "modifiedBy",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "TemplateChecklist",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "templateTask",
+      "otherEntityRelationshipName": "checklist",
+      "relationshipName": "task",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

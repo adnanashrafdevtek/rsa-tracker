@@ -1,0 +1,50 @@
+{
+  "annotations": {
+    "changelogDate": "20240807010102"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "template",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "modifiedDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "modifiedBy",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Template",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "templateTask",
+      "otherEntityRelationshipName": "template",
+      "relationshipName": "tasks",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}
