@@ -41,6 +41,7 @@ export const TeamKanban = () => {
   );
 
   interface IColumn {
+    [x: string]: any;
     name: string;
     items: any[]; // You can replace `any` with a more specific type if needed
   }
@@ -59,7 +60,7 @@ export const TeamKanban = () => {
     );
   };
 
-  const getUserKanbanList = (team: ITeam) => {
+  const getUserKanbanList = (team: ITeamkanban) => {
     const users: any[] = [];
     team.teamMembers.forEach(user => {
       const task: any = {};
@@ -146,7 +147,7 @@ export const TeamKanban = () => {
                   }}
                   key={columnId}
                 >
-                  <h2>{column.name}</h2>
+                  <h2 style={{ backgroundColor: 'lightgrey' }}>{column.name}</h2>
                   <div style={{ margin: 8 }}>
                     <Droppable droppableId={columnId} key={columnId}>
                       {(provided, snapshot) => {

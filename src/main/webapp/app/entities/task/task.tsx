@@ -8,7 +8,7 @@ import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-
+// import './styles.css';
 import { getEntities } from './task.reducer';
 
 export const Task = () => {
@@ -165,8 +165,8 @@ export const Task = () => {
                   <td>{task.createdBy}</td>
                   <td>{task.modifiedDate ? <TextFormat type="date" value={task.modifiedDate} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{task.modifiedBy}</td>
-                  <td>{task.assignedTo ? task.assignedTo.id : ''}</td>
-                  <td>{task.team ? <Link to={`/team/${task.team.id}`}>{task.team.id}</Link> : ''}</td>
+                  <td>{task.assignedTo ? task.assignedTo.login : ''}</td>
+                  <td>{task.team ? <Link to={`/team/${task.team.id}`}>{task.team.name}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/task/${task.id}`} color="info" size="sm" data-cy="entityDetailsButton">

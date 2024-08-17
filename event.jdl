@@ -1,0 +1,63 @@
+
+
+enum Priority{
+	HIGH,MEDIUM,LOW
+}
+enum TaskStatus{
+	ACTIVE,COMPLETED,CANCELLED,OVERDUE
+}
+
+entity Team{
+	name String required
+    active Boolean required
+    createdDate Instant
+    createdBy String
+    modifiedDate Instant
+    modifiedBy String
+}
+entity Task{
+	name String required
+    description String required
+    priority Priority required
+    status TaskStatus required
+    dueDate LocalDate required
+    createdDate Instant
+    createdBy String
+    modifiedDate Instant
+    modifiedBy String
+    
+    
+}
+entity Message {
+	email String 
+	message String required
+    sendToAllTeamMembers Boolean  required
+    broadcastToAllTeams Boolean required
+    dateSent Instant
+}
+entity Document {
+	name String required
+    mimeType String required
+    url String
+    createdDate Instant
+    createdBy String
+}
+
+relationship ManyToMany {
+	Team{teamMembers} to User{teams} with builtInEntity
+}
+
+relationship ManyToOne {
+	Task{assignedTo} to User with builtInEntity
+    Task{team} to Team{tasks}
+    Message{toUserId} to User with builtInEntity
+    Message{fromUserId} to User with builtInEntity
+    Message{team} to Team{messages}
+    Document{message} to Message{documents}
+    Document{team} to Team{documents}
+    Team{teamLead} to User with builtInEntity
+}
+dto * with mapstruct
+filter *
+service all with serviceClass
+paginate all with pagination

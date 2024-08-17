@@ -98,7 +98,7 @@ export const TeamUpdate = () => {
             <p>Loading...</p>
           ) : (
             <ValidatedForm defaultValues={defaultValues()} onSubmit={saveEntity}>
-              {!isNew ? <ValidatedField name="id" required readOnly id="team-id" label="ID" validate={{ required: true }} /> : null}
+              {/* {!isNew ? <ValidatedField name="id" required readOnly id="team-id" label="ID" validate={{ required: true }} /> : null} */}
               <ValidatedField
                 label="Name"
                 id="team-name"
@@ -110,7 +110,7 @@ export const TeamUpdate = () => {
                 }}
               />
               <ValidatedField label="Active" id="team-active" name="active" data-cy="active" check type="checkbox" />
-              <ValidatedField
+              {/* <ValidatedField
                 label="Created Date"
                 id="team-createdDate"
                 name="createdDate"
@@ -127,13 +127,13 @@ export const TeamUpdate = () => {
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
-              <ValidatedField label="Modified By" id="team-modifiedBy" name="modifiedBy" data-cy="modifiedBy" type="text" />
+              <ValidatedField label="Modified By" id="team-modifiedBy" name="modifiedBy" data-cy="modifiedBy" type="text" /> */}
               <ValidatedField id="team-teamLead" name="teamLead" data-cy="teamLead" label="Team Lead" type="select">
                 <option value="" key="0" />
                 {users
                   ? users.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
+                        {otherEntity.login}
                       </option>
                     ))
                   : null}
@@ -143,7 +143,7 @@ export const TeamUpdate = () => {
                 {users
                   ? users.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
+                        {otherEntity.login}
                       </option>
                     ))
                   : null}

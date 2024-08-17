@@ -7,6 +7,8 @@ import Team from './team';
 import Task from './task';
 import Message from './message';
 import Document from './document';
+import TeamKanban from './team/teamKanban';
+import TaskKanban from './task/taskKanban';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -14,6 +16,9 @@ export default () => {
     <div>
       <ErrorBoundaryRoutes>
         {/* prettier-ignore */}
+        <Route path="teamKanban/*" element={<TeamKanban />} />
+        <Route path="taskKanban/*" element={<TaskKanban />} />
+        <Route path="taskKanbanByTeam/*" element={<TaskKanban />} />
         <Route path="team/*" element={<Team />} />
         <Route path="task/*" element={<Task />} />
         <Route path="message/*" element={<Message />} />
