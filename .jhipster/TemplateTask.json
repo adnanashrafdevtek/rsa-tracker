@@ -1,0 +1,56 @@
+{
+  "annotations": {
+    "changelogDate": "20240807010202"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "template_task",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "modifiedDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "modifiedBy",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "TemplateTask",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "template",
+      "otherEntityRelationshipName": "tasks",
+      "relationshipName": "template",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "templateChecklist",
+      "otherEntityRelationshipName": "task",
+      "relationshipName": "checklist",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

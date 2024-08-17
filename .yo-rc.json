@@ -17,7 +17,7 @@
     "enableHibernateCache": false,
     "enableSwaggerCodegen": false,
     "enableTranslation": false,
-    "entities": ["Team", "Task", "Message", "Document"],
+    "entities": ["Template", "Team", "TemplateTask", "Task", "TemplateChecklist", "Message", "Document"],
     "feignClient": false,
     "gradleEnterpriseHost": null,
     "jhipsterVersion": "8.1.0",
